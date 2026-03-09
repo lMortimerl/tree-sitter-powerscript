@@ -1,0 +1,115 @@
+===
+Simple function definition
+===
+
+public function integer f_test()
+integer li_val
+return li_val
+end function
+
+---
+
+(source_file
+  (function_definition
+    (access_modifier)
+    return_type: (primitive_type)
+    name: (identifier)
+    (variable_declaration
+      (primitive_type)
+      (variable_declarator
+        name: (identifier)))
+    (return_statement
+      (identifier))))
+
+===
+Function with parameters
+===
+
+public function string f_greet(string as_name, integer ai_count)
+return as_name
+end function
+
+---
+
+(source_file
+  (function_definition
+    (access_modifier)
+    return_type: (primitive_type)
+    name: (identifier)
+    (parameter_list
+      (parameter
+        (primitive_type)
+        name: (identifier))
+      (parameter
+        (primitive_type)
+        name: (identifier)))
+    (return_statement
+      (identifier))))
+
+===
+Subroutine definition
+===
+
+public subroutine f_dosomething()
+end subroutine
+
+---
+
+(source_file
+  (subroutine_definition
+    (access_modifier)
+    name: (identifier)))
+
+===
+Private function definition
+===
+
+private function boolean f_check()
+return true
+end function
+
+---
+
+(source_file
+  (function_definition
+    (access_modifier)
+    return_type: (primitive_type)
+    name: (identifier)
+    (return_statement
+      (boolean))))
+
+===
+Event definition
+===
+
+event pfc_postopen;
+end event
+
+---
+
+(source_file
+  (event_definition
+    name: (identifier)))
+
+===
+Event definition with body
+===
+
+event pfc_postopen;
+integer li_x
+li_x = 1
+end event
+
+---
+
+(source_file
+  (event_definition
+    name: (identifier)
+    (variable_declaration
+      (primitive_type)
+      (variable_declarator
+        name: (identifier)))
+    (expression_statement
+      (binary_expression
+        left: (identifier)
+        right: (number)))))

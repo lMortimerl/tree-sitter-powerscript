@@ -1,0 +1,128 @@
+===
+Not expression
+===
+
+public function boolean f_test()
+boolean lb_val
+lb_val = not true
+return lb_val
+end function
+
+---
+
+(source_file
+  (function_definition
+    (access_modifier)
+    return_type: (primitive_type)
+    name: (identifier)
+    (variable_declaration
+      (primitive_type)
+      (variable_declarator
+        name: (identifier)))
+    (expression_statement
+      (binary_expression
+        left: (identifier)
+        right: (not_expression
+          operand: (boolean))))
+    (return_statement
+      (identifier))))
+
+===
+This expression
+===
+
+public function string f_test()
+return this.is_name
+end function
+
+---
+
+(source_file
+  (function_definition
+    (access_modifier)
+    return_type: (primitive_type)
+    name: (identifier)
+    (return_statement
+      (member_expression
+        object: (this_expression)
+        property: (identifier)))))
+
+===
+Index expression
+===
+
+public function string f_test()
+return ls_arr[1]
+end function
+
+---
+
+(source_file
+  (function_definition
+    (access_modifier)
+    return_type: (primitive_type)
+    name: (identifier)
+    (return_statement
+      (index_expression
+        object: (identifier)
+        index: (number)))))
+
+===
+Enum constant
+===
+
+public function integer f_test()
+integer li_align
+li_align = AlignCenter!
+return li_align
+end function
+
+---
+
+(source_file
+  (function_definition
+    (access_modifier)
+    return_type: (primitive_type)
+    name: (identifier)
+    (variable_declaration
+      (primitive_type)
+      (variable_declarator
+        name: (identifier)))
+    (expression_statement
+      (binary_expression
+        left: (identifier)
+        right: (enum_constant)))
+    (return_statement
+      (identifier))))
+
+===
+Continue statement
+===
+
+public subroutine f_test()
+continue
+end subroutine
+
+---
+
+(source_file
+  (subroutine_definition
+    (access_modifier)
+    name: (identifier)
+    (continue_statement)))
+
+===
+Exit statement
+===
+
+public subroutine f_test()
+exit
+end subroutine
+
+---
+
+(source_file
+  (subroutine_definition
+    (access_modifier)
+    name: (identifier)
+    (exit_statement)))

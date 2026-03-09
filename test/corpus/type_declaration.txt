@@ -1,0 +1,95 @@
+===
+Global type declaration
+===
+
+global type uo_example from nonvisualobject
+end type
+
+---
+
+(source_file
+  (type_declaration
+    name: (identifier)
+    ancestor: (identifier)))
+
+===
+Global type declaration with members
+===
+
+global type uo_example from nonvisualobject
+string is_name
+integer ii_count
+end type
+
+---
+
+(source_file
+  (type_declaration
+    name: (identifier)
+    ancestor: (identifier)
+    (type_member
+      (type_variable_member
+        (primitive_type)
+        (variable_declarator
+          name: (identifier))))
+    (type_member
+      (type_variable_member
+        (primitive_type)
+        (variable_declarator
+          name: (identifier))))))
+
+===
+Forward block
+===
+
+forward
+global type uo_example from nonvisualobject
+end type
+end forward
+
+---
+
+(source_file
+  (forward_block
+    (forward_type_declaration
+      name: (identifier)
+      ancestor: (identifier))))
+
+===
+Type variables block
+===
+
+type variables
+integer ii_count
+string is_name
+end variables
+
+---
+
+(source_file
+  (type_variables_block
+    (variable_declaration
+      (primitive_type)
+      (variable_declarator
+        name: (identifier)))
+    (variable_declaration
+      (primitive_type)
+      (variable_declarator
+        name: (identifier)))))
+
+===
+Shared variables block
+===
+
+shared variables
+string ss_shared
+end variables
+
+---
+
+(source_file
+  (shared_variables_block
+    (variable_declaration
+      (primitive_type)
+      (variable_declarator
+        name: (identifier)))))

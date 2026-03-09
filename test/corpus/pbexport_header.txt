@@ -1,0 +1,12 @@
+===
+PBExport header lines
+===
+
+$PBExportHeader$uo_example.sru
+$PBExportComments$This is a comment.
+
+---
+
+(source_file
+  (pbexport_header)
+  (pbexport_header))
