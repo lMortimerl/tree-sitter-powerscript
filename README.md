@@ -44,6 +44,111 @@ The parser grammar is designed to be lightweight and extensible, focusing on the
 
 ---
 
+## Neovim Integration
+
+This section describes how to integrate this Tree-sitter parser with Neovim using [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter).
+
+### 1. Register the parser
+
+Add the following to your Neovim config (e.g. `init.lua`) **before** `nvim-treesitter` is set up:
+
+```lua
+local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+parser_config.powerscript = {
+  install_info = {
+    url = "https://github.com/lmortimerl/tree-sitter-powerscript",
+    files = { "src/parser.c", "src/scanner.c" },
+    branch = "master",
+    generate_requires_npm = false,
+    requires_generate_from_grammar = false,
+  },
+  filetype = "powerscript",
+}
+```
+
+### 2. Install the parser
+
+Inside Neovim, run:
+
+```
+:TSInstall powerscript
+```
+
+### 3. Set up filetype detection
+
+PowerBuilder source files use several extensions. Add this to your config so Neovim recognises them:
+
+```lua
+vim.filetype.add({
+  extension = {
+    sra = "powerscript",  -- Application
+    sru = "powerscript",  -- User Object
+    srw = "powerscript",  -- Window
+    srd = "powerscript",  -- DataWindow
+    srm = "powerscript",  -- Menu
+    srf = "powerscript",  -- Function
+    srx = "powerscript",  -- Structure
+    srp = "powerscript",  -- Pipeline
+    srq = "powerscript",  -- Query
+  },
+})
+```
+
+### 4. Copy the highlight queries
+
+`nvim-treesitter` looks for queries under its own runtime path. You can either:
+
+**Option A – symlink/copy manually:**
+
+```sh
+# Replace <nvim-treesitter-path> with the actual plugin location, e.g.
+# ~/.local/share/nvim/lazy/nvim-treesitter
+cp queries/highlights.scm <nvim-treesitter-path>/queries/powerscript/highlights.scm
+cp queries/locals.scm     <nvim-treesitter-path>/queries/powerscript/locals.scm
+```
+
+**Option B – use your own runtime path (recommended):**
+
+Place the query files under your Neovim config:
+
+```
+~/.config/nvim/queries/powerscript/highlights.scm
+~/.config/nvim/queries/powerscript/locals.scm
+```
+
+Neovim will automatically pick them up from here without touching the plugin directory.
+
+### 5. Enable highlighting
+
+Make sure `highlight` is enabled in your `nvim-treesitter` setup:
+
+```lua
+require("nvim-treesitter.configs").setup({
+  highlight = {
+    enable = true,
+  },
+})
+```
+
+### Local development workflow
+
+If you are modifying the grammar, you can point directly to your local clone instead of the GitHub URL:
+
+```lua
+install_info = {
+  url = "/path/to/tree-sitter-powerscript",  -- absolute path to this repo
+  files = { "src/parser.c", "src/scanner.c" },
+},
+```
+
+Then re-run `:TSInstall powerscript` (or `:TSUpdate powerscript`) after regenerating the parser with:
+
+```sh
+npx tree-sitter generate
+```
+
+---
+
 ## Roadmap
 
 The following features and improvements are planned for future releases:

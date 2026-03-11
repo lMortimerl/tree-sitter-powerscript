@@ -10,6 +10,8 @@
 module.exports = grammar({
   name: "powerscript",
 
+  word: ($) => $.identifier,
+
   externals: ($) => [$.block_comment],
 
   conflicts: ($) => [
@@ -58,8 +60,12 @@ module.exports = grammar({
     /* ---- Literals ---- */
     number: (_) => /\d+(\.\d+)?/,
     string: ($) =>
-      seq('"', repeat(choice($.string_fragment, $.escape_sequence)), '"'),
-    string_fragment: (_) => token.immediate(/[^"~\n]+/),
+      choice(
+        seq('"', repeat(choice($.string_fragment, $.escape_sequence)), '"'),
+        seq("'", repeat(choice($.string_fragment, $.escape_sequence)), "'"),
+      ),
+    // Excludes both quote characters and the tilde escape prefix
+    string_fragment: (_) => token.immediate(/[^"'~\n]+/),
     escape_sequence: (_) =>
       token.immediate(
         seq(
