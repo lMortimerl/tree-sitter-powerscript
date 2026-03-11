@@ -36,34 +36,30 @@ The setup below follows the [official nvim-treesitter guide for adding custom la
 
 ### 1. Register the parser
 
-Register the parser inside a `User TSUpdate` autocommand so nvim-treesitter picks it up during install/update:
+Call `get_parser_configs()` to register the parser into nvim-treesitter's internal parser list. Do this before calling `nvim-treesitter.configs.setup()`, somewhere that runs at startup after nvim-treesitter is loaded (e.g. your treesitter config file):
 
 ```lua
-vim.api.nvim_create_autocmd('User', {
-  pattern = 'TSUpdate',
-  callback = function()
-    require('nvim-treesitter.parsers').powerscript = {
-      install_info = {
-        url      = 'https://github.com/lmortimerl/tree-sitter-powerscript',
-        branch   = 'master',
-        generate = true,
-      },
-    }
-  end,
+require('nvim-treesitter.parsers').get_parser_configs().powerscript = {
+  install_info = {
+    url    = 'https://github.com/lmortimerl/tree-sitter-powerscript',
+    branch = 'master',
+    files  = { 'src/parser.c', 'src/scanner.c' },
+    generate = true,
+  },
+}
+
+require('nvim-treesitter.configs').setup({
+  highlight = { enable = true },
 })
 ```
 
-### 2. Register the filetype
+> **Note:** Use `get_parser_configs()`, not a direct field assignment on the module.
+> nvim-treesitter's install command reads from an internal list returned by that function —
+> assigning directly to the module table (e.g. `require(...).powerscript = ...`) will not work.
 
-PowerScript's filetype name differs from what Neovim detects by default, so you need two things:
+### 2. Detect PowerBuilder file extensions as `powerscript`
 
-**a) Tell Tree-sitter which filetype maps to this parser:**
-
-```lua
-vim.treesitter.language.register('powerscript', 'powerscript')
-```
-
-**b) Tell Neovim to detect PowerBuilder source files as `powerscript`:**
+Add this to your Neovim config (e.g. `options.lua`):
 
 ```lua
 vim.filetype.add({
@@ -91,14 +87,7 @@ Inside Neovim, run:
 
 ### 4. Add the query files
 
-nvim-treesitter needs the highlight (and optionally locals) queries. The recommended location is your own Neovim config runtime — Neovim picks these up automatically without touching the plugin directory:
-
-```
-~/.config/nvim/queries/powerscript/highlights.scm
-~/.config/nvim/queries/powerscript/locals.scm
-```
-
-Copy them from this repo:
+Place the highlight and locals queries under your Neovim config runtime directory — Neovim picks them up automatically:
 
 ```sh
 mkdir -p ~/.config/nvim/queries/powerscript
@@ -106,30 +95,29 @@ cp queries/highlights.scm ~/.config/nvim/queries/powerscript/highlights.scm
 cp queries/locals.scm     ~/.config/nvim/queries/powerscript/locals.scm
 ```
 
-### 5. Enable highlighting
+On Windows (`~/AppData/Local/nvim/`):
 
-Make sure `highlight` is enabled in your nvim-treesitter config:
-
-```lua
-require('nvim-treesitter.configs').setup({
-  highlight = { enable = true },
-})
+```powershell
+New-Item -ItemType Directory -Force "$env:LOCALAPPDATA\nvim\queries\powerscript"
+Copy-Item queries\highlights.scm "$env:LOCALAPPDATA\nvim\queries\powerscript\"
+Copy-Item queries\locals.scm     "$env:LOCALAPPDATA\nvim\queries\powerscript\"
 ```
 
 ### Local development
 
-To work against a local clone of this repo instead of the GitHub URL, use `path` instead of `url`:
+To work against a local clone instead of the GitHub URL, use `path` instead of `url` (branch/revision are ignored for local paths):
 
 ```lua
-require('nvim-treesitter.parsers').powerscript = {
+require('nvim-treesitter.parsers').get_parser_configs().powerscript = {
   install_info = {
-    path     = '/path/to/tree-sitter-powerscript',
+    path   = '/path/to/tree-sitter-powerscript',
+    files  = { 'src/parser.c', 'src/scanner.c' },
     generate = true,
   },
 }
 ```
 
-After editing `grammar.js`, regenerate the parser and reinstall:
+After editing `grammar.js`, regenerate and reinstall:
 
 ```sh
 npx tree-sitter generate
