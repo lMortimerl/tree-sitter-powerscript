@@ -1,4 +1,4 @@
-#include <tree_sitter/parser.h>
+#include <C:/Users/kirchermeier/Entwicklung/tree-sitter-powerscript/src/tree_sitter/parser.h>
 #include <stdbool.h>
 
 enum TokenType {
